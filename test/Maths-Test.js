@@ -1,16 +1,17 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const {expect, assert } = require("chai");
+const {ethers } = require("hardhat");
 
-
-describe("Maths calculation", function(){
-    it("add 2 numbers", async function() {
-        const Maths= await ethers.getContractFactory("Maths");
+describe("Maths", function(){
+    it("add 2 numbers", async function(){
+        const Maths = await ethers.getContractFactory("Maths");
         const maths = await Maths.deploy();
         await maths.deployed();
 
-        const res = await maths.add(8,4);
-    await res.wait();
+        const sum = await maths.add(3,6);
+        await sum.wait();
 
-        expect(await maths.res()).to.equal(12);
-    });
+        //expect(await res).to.equal(9);
+//assert.equal(await maths.getRes(),9, "added correctly");
+        assert.equal(sum,9, "added correctly");
+    })
 })

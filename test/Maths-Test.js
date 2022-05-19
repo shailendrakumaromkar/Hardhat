@@ -11,6 +11,6 @@ describe("Maths calculation", function(){
         const res = await maths.add(8,4);
     await res.wait();
 
-        expect(await res()).to.equal(12);
+        expect(await maths.res()).to.equal(12);
     });
 })

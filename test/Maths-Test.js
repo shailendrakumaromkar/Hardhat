@@ -14,6 +14,7 @@ describe("Maths", function(){
         //expect(await res).to.equal(9)
         //assert.equal(await maths.getRes(),9, "added correctly");
         //assert.equal(await maths.res(),9, "added correctly");
-        assert.equal(sum,9, "added correctly");
+        //assert.equal(sum,9, "added correctly");
+        expect(await maths.getRes()).to.equal(9);
     })
 })

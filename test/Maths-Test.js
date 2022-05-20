@@ -11,8 +11,9 @@ describe("Maths", function(){
         console.log("printing before wait : ", sum);
         await sum.wait();
         console.log("printing after wait : ", sum);
-        //expect(await res).to.equal(9);
-//assert.equal(await maths.getRes(),9, "added correctly");
+        //expect(await res).to.equal(9)
+        //assert.equal(await maths.getRes(),9, "added correctly");
+        //assert.equal(await maths.res(),9, "added correctly");
         assert.equal(sum,9, "added correctly");
     })
 })

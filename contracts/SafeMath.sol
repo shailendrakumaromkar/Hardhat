@@ -9,6 +9,7 @@ library SafeMath{
         return c;
     }
 
+    //sub
     function sub(uint a, uint b) public pure returns (uint){
         require(b<=a);
         uint c= a-b;

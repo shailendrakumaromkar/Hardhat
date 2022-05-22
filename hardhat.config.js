@@ -24,5 +24,9 @@ module.exports = {
       url:'https://polygon-mumbai.g.alchemy.com/v2/Rp-HYSuW1x80ahWU8n-6Uo9POt2kiePu',
       accounts: [`0x${process.env.PRIVATE_KEY}`]
     }
-  }
+  },
+  // plugins: ["solidity-coverage"],
+  // mocha: {
+  //   reporter: 'eth-gas-reporter',
+  // }
 };

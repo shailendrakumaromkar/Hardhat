@@ -1,6 +1,6 @@
-//SPDX-License-Identifier:GPL-3.0
+//SPDX-License-Identifier: GPL-3.0
 
-pragma solidity >=0.4.0 <0.8.1;
+pragma solidity >=0.4.0 < 0.8.0;
 
 contract Voting {
 
@@ -14,93 +14,91 @@ contract Voting {
         bool voted;
     }
 
-    enum State { Created, Start, End }
-    State public state;
-
-    event voterAdded(address voterAddress, string voterName);
-    event votingStart();
-    event votingEnd(uint finalResult);
-    event voteDone(address voter);
-
-    uint totalVote;
-    uint countVote;
-    uint finalResult;
-    uint totalVoter;
-    address chairPerson;
+    uint public voterCount=0;
+    uint public voteCount=0;
+    uint public totalVote=0;
+    address electionCommission;
     string electionName;
 
-    mapping(address => voter) public voterRegister;
-    mapping(uint => vote) public votes;
+
+    enum Status {Create, Start , End}
+    Status public status;
 
 
-    constructor(address _chairPersonAddress, string memory _electionName ){
-        chairPerson =_chairPersonAddress;
-        electionName = _electionName;
-        state = State.Created;
+    event voterAdded(address voterAddress);
+    event votingStart(address voterAddress);
+    event electionEnd();
+    event result(uint voteCount);
 
-    }
 
-    modifier onlyChairPerson () {
-        require (msg.sender ==chairPerson);
+    mapping(address => voter) public registeredVoter;
+    mapping(uint => vote) public voted;
+
+    modifier onlyElectionCommission(){
+        require(msg.sender == electionCommission);
         _;
     }
 
-    modifier status(State _state){
-        require(state ==_state);
+    modifier _currentStatus(Status _status){
+        require(status ==_status);
         _;
     }
 
-    function addVoter(address _voterAddress,string memory _voterName) public status(State.Created) onlyChairPerson {
+    constructor(string memory _electioName){
+        electionCommission = msg.sender;
+        electionName =_electioName;
+        status = Status.Create;
+    }
+
+
+    function addVoter(address _voterAddress, string memory _voterName) public _currentStatus(Status.Create) onlyElectionCommission{
+
         voter memory v;
-        v.voterName = _voterName;
-        v.voted= false;
+        v.voterName=_voterName;
+        v.voted=false;
 
-        voterRegister[_voterAddress]=v;
-        totalVoter++;
-
-
-    emit voterAdded( _voterAddress,  _voterName);
-
-    }   
-
-
-    function startVoting() public status (State.Created) onlyChairPerson{
-       state = State.Start;
-       emit votingStart();
+        registeredVoter[_voterAddress] = v; 
+        voterCount++;
+        emit voterAdded (_voterAddress);
+    }
+    
+    function startVoting() public _currentStatus(Status.Create) onlyElectionCommission{
+        status = Status.Start;
     }
 
+    function voterVote(bool _choice) public _currentStatus(Status.Start) returns (bool) {
 
-    function doVoting(bool _choice) public returns (bool){
-        bool done=false;
-        vote memory v;
-        if (!voterRegister[msg.sender].voted && 
-            bytes(voterRegister[msg.sender].voterName).length!=0)
-    {
-         voterRegister[msg.sender].voted = true;
-         v.choice=_choice;
-         v.voterAddress=msg.sender;
-            totalVote++;
+        bool finish= false;
+
+        //require(registeredVoter[electionCommission].vote=false);
+        if (bytes(registeredVoter[msg.sender].voterName).length !=0 && !registeredVoter[msg.sender].voted)  
+        {
+            registeredVoter[msg.sender].voted = true;
+
+            vote memory v;
+            v.choice=_choice;
+            v.voterAddress=msg.sender;
 
             if(_choice){
-                countVote++;
+                voteCount++;
             }
 
-            votes[totalVote]=v;
+            voted[totalVote]= v;
             totalVote++;
-            done=true;
-    }   
-        emit voteDone(msg.sender);
-        return done;
-    }
+            finish=true;
 
-    function votingFinish() public status(State.Start) onlyChairPerson{
-        state = State.End;
-    }
+        }
 
-    //final results
-    function result() public status(State.End) onlyChairPerson {
-        finalResult = countVote;
+        //status= Status.End;
 
-        emit votingEnd(finalResult);
+    emit votingStart(msg.sender);
+        return finish;
+
     }
+            function endVoting() public _currentStatus(Status.Start) onlyElectionCommission {
+                
+               status = Status.End;
+                //return voteCount;
+                 emit result(voteCount);
+            }
 }

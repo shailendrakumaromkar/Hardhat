@@ -97,7 +97,7 @@ contract Voting {
         state = State.End;
     }
 
-    //final result
+    //final results
     function result() public status(State.End) onlyChairPerson {
         finalResult = countVote;
 

@@ -6,7 +6,7 @@ import "hardhat/console.sol";
 contract Maths {
     uint a;
     uint b;
-    uint res;
+    uint public res;
 
 
     function add(uint _a, uint _b) public returns (uint){

@@ -89,7 +89,7 @@ contract Voting {
 
         }
 
-        //status= Status.End;
+        //status= Status.End
 
     emit votingStart(msg.sender);
         return finish;

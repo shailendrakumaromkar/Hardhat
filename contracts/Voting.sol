@@ -98,7 +98,7 @@ contract Voting {
             function endVoting() public _currentStatus(Status.Start) onlyElectionCommission {
                 
                status = Status.End;
-                //return voteCount;
+                //return voteCount
                  emit result(voteCount);
             }
 }
